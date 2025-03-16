@@ -25,3 +25,12 @@ To run this project, you need to have the following dependencies installed:
 - To install all the required dependencies for the project, run:
   ```bash
   pip install -r requirements.txt
+
+### 6. Create credentials.json
+- **Important**: Don’t forget to create and fill in the **credentials.json** file, which is required for authentication or connection settings in the project. This file should contain sensitive data (login and password), so make sure it is stored securely and do not commit it to your Git repository (it should be listed in .gitignore).
+- Example structure of credentials.json:
+  ```javascript
+  {
+    "login": "your_login",
+    "password": "your_password"
+  }
