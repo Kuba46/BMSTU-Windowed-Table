@@ -142,14 +142,14 @@ def deserialize_html_student(
     )
 
 
-def parse_students(driver: WebDriver, url: str) -> Optional[list[Student]]:
+def parse_students(driver: WebDriver, url: str) -> list[Student]:
     logger.info(f'Parsing students from the URL: {url}.')
     driver.get(url)
 
     html_students = driver.find_elements(By.XPATH, "//tbody/tr")
     if not html_students:
         logger.warning(f'Cannot find <tr> tags in the <tbody>. URL: {url}')
-        return None
+        return []
 
     students = []
     for html_student in html_students:
@@ -161,7 +161,7 @@ def parse_students(driver: WebDriver, url: str) -> Optional[list[Student]]:
     return students
 
 
-def find_department_links(driver: WebDriver) -> list[Optional[str]]:
+def find_department_links(driver: WebDriver) -> list[str]:
     logger.info('Finding department links.')
     first_ul = driver.find_element(By.XPATH, "//ul[@class='eu-tree-nodeset']")
     links = first_ul.find_elements(
@@ -179,7 +179,7 @@ def find_department_links(driver: WebDriver) -> list[Optional[str]]:
         )
 
     logger.info(f'Found {len(links)} department links.')
-    return [link.get_attribute('href') for link in links]
+    return [elem for link in links if (elem := link.get_attribute('href'))]
 
 
 def write_to_csv(writer: csv.DictWriter, students: list[Student]):
@@ -189,34 +189,35 @@ def write_to_csv(writer: csv.DictWriter, students: list[Student]):
     logger.info(f'Wrote {len(students)} students to the CSV file.')
 
 
+def setup_driver() -> WebDriver:
+    chrome_options = Options()
+    # Comment this if you want to see the browser.
+    chrome_options.add_argument('--headless')
+    return webdriver.Chrome(options=chrome_options)
+
+
+def process_students(
+    driver: WebDriver,
+    links: list[str],
+):
+    with open(OUTPUT_FILE_NAME, 'w', encoding='utf-8') as file:
+        writer = csv.DictWriter(file, fieldnames=HEADERS)
+        writer.writeheader()
+        for link in links:
+            students = parse_students(driver, link)
+            write_to_csv(writer, students)
+
+
 def main():
-    driver = None
     try:
         logger.info('Starting the script.')
-        chrome_options = Options()
-
-        # Comment this if you want to see the browser.
-        chrome_options.add_argument('--headless')
-        driver = webdriver.Chrome(options=chrome_options)
-
-        auth(driver, LOGIN_URL)
-        links = find_department_links(driver)
-
-        with open(OUTPUT_FILE_NAME, 'w', encoding='utf-8') as file:
-            writer = csv.DictWriter(file, fieldnames=HEADERS)
-            writer.writeheader()
-            for link in links:
-                students = parse_students(driver, link)
-                if students:
-                    write_to_csv(writer, students)
-
-        logger.info('Script finished successfully.')
-
+        with setup_driver() as driver:
+            auth(driver, LOGIN_URL)
+            links = find_department_links(driver)
+            process_students(driver, links)
+            logger.info('Script finished successfully.')
     except Exception as e:
         print(f'An error occurred: {e}')
-    finally:
-        if driver:
-            driver.quit()
 
 
 if __name__ == '__main__':
