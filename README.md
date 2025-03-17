@@ -3,7 +3,7 @@ A web scraper for extracting student data from the “Electronic University” (
 
 ## Requirements
 
-To run this project, you need to have the following dependencies installed:
+To run this project, follow these steps:
 
 ### 1. Python
 - Python 3.6 or higher is required. You can download the latest version of Python from [here](https://www.python.org/downloads/).
