@@ -104,10 +104,13 @@ def auth(driver: WebDriver, url):
         login_button = driver.find_element(By.NAME, 'submit')
         login_button.click()
 
-        # Wait until the URL changes.
-        WebDriverWait(driver, 10).until(
-            EC.url_changes(current_url)
-        )
+        try:
+            # Wait until the URL changes.
+            WebDriverWait(driver, 10).until(
+                EC.url_changes(current_url)
+            )
+        except Exception:
+            raise ValueError('Failed to authenticate.')
 
     WebDriverWait(driver, 10).until(EC.url_contains(TARGET_URL))
     logger.info('Successfully authenticated.')
