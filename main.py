@@ -1,7 +1,9 @@
+from typing import Optional
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.remote.webelement import WebElement
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from dataclasses import dataclass, fields
@@ -22,8 +24,8 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.StreamHandler(),  # to stdout
-        logging.FileHandler(LOG_FILE_NAME, encoding="utf-8")  # to file
+        logging.StreamHandler(),  # To stdout.
+        logging.FileHandler(LOG_FILE_NAME, encoding="utf-8")  # To file.
     ]
 )
 
@@ -57,7 +59,7 @@ HEADERS = [
 ]
 
 
-def load_credentials(filename):
+def load_credentials(filename: str):
     logger.info(f'Loading credentials from file: {filename}.')
 
     if not os.path.exists(filename):
@@ -80,7 +82,7 @@ def load_credentials(filename):
         )
 
 
-def auth(driver: WebDriver, url):
+def auth(driver: WebDriver, url: str):
     logger.info(f'Authenticating on the website: {url}.')
     login, password = load_credentials(CREDENTIALS_FILE_NAME)
     driver.get(url)
@@ -116,41 +118,50 @@ def auth(driver: WebDriver, url):
     logger.info('Successfully authenticated.')
 
 
-def parse_students(driver: WebDriver, url):
+def deserialize_html_student(
+    html_student: WebElement, url: str
+) -> Optional[Student]:
+    tds = html_student.find_elements(By.TAG_NAME, 'td')
+    if not tds:
+        logger.warning(f'Cannot find <td> tags in the <tr>. URL: {url}')
+        return None
+
+    # Current HTML structure contains at least 5 <td> elements in the <tr>.
+    if len(tds) < 5:
+        logger.warning(
+            f'Invalid <td> structure. Expected 5 elements, '
+            f'but found {len(tds)}. URL: {url}'
+            )
+        return None
+
+    return Student(
+        name=tds[1].text.strip() or "N/A",
+        record_book_id=tds[2].text.strip() or "N/A",
+        group_id=tds[3].text.strip() or "N/A",
+        specialty_id=tds[4].text.strip() or "N/A"
+    )
+
+
+def parse_students(driver: WebDriver, url: str) -> Optional[list[Student]]:
     logger.info(f'Parsing students from the URL: {url}.')
     driver.get(url)
 
     html_students = driver.find_elements(By.XPATH, "//tbody/tr")
     if not html_students:
-        raise ValueError(f'Cannot find <tr> tag in the <tbody>. URL: {url}')
+        logger.warning(f'Cannot find <tr> tags in the <tbody>. URL: {url}')
+        return None
 
     students = []
     for html_student in html_students:
-        tds = html_student.find_elements(By.TAG_NAME, 'td')
-
-        if not tds:
-            raise ValueError(f'Cannot find <td> tag in the <tr>. URL: {url}')
-
-        # Current HTML structure contains at least 5 <td> elements in the <tr>.
-        if len(tds) < 5:
-            logger.warning(
-                f'Invalid <td> structure. Expected 5 elements, '
-                f'but found {len(tds)}. URL: {url}'
-            )
-            continue
-
-        students.append(Student(
-            name=tds[1].text.strip() or "N/A",
-            record_book_id=tds[2].text.strip() or "N/A",
-            group_id=tds[3].text.strip() or "N/A",
-            specialty_id=tds[4].text.strip() or "N/A")
-        )
+        student = deserialize_html_student(html_student, url)
+        if student:
+            students.append(student)
 
     logger.info(f'Found {len(students)} students.')
     return students
 
 
-def find_department_links(driver: WebDriver):
+def find_department_links(driver: WebDriver) -> list[Optional[str]]:
     logger.info('Finding department links.')
     first_ul = driver.find_element(By.XPATH, "//ul[@class='eu-tree-nodeset']")
     links = first_ul.find_elements(
@@ -171,7 +182,7 @@ def find_department_links(driver: WebDriver):
     return [link.get_attribute('href') for link in links]
 
 
-def write_to_csv(writer: csv.DictWriter, students):
+def write_to_csv(writer: csv.DictWriter, students: list[Student]):
     logger.info('Writing students to the CSV file.')
     for student in students:
         writer.writerow(student.to_dict())
@@ -184,7 +195,7 @@ def main():
         logger.info('Starting the script.')
         chrome_options = Options()
 
-        # Comment this if you want to see the browser
+        # Comment this if you want to see the browser.
         chrome_options.add_argument('--headless')
         driver = webdriver.Chrome(options=chrome_options)
 
@@ -196,7 +207,8 @@ def main():
             writer.writeheader()
             for link in links:
                 students = parse_students(driver, link)
-                write_to_csv(writer, students)
+                if students:
+                    write_to_csv(writer, students)
 
         logger.info('Script finished successfully.')
 
