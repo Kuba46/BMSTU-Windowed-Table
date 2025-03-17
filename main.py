@@ -151,11 +151,10 @@ def parse_students(driver: WebDriver, url: str) -> list[Student]:
         logger.warning(f'Cannot find <tr> tags in the <tbody>. URL: {url}')
         return []
 
-    students = []
-    for html_student in html_students:
-        student = deserialize_html_student(html_student, url)
-        if student:
-            students.append(student)
+    students = [
+        student for html_student in html_students
+        if (student := deserialize_html_student(html_student, url))
+    ]
 
     logger.info(f'Found {len(students)} students.')
     return students
