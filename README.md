@@ -1,4 +1,4 @@
-# bauman-student-parser
+# BMSTU-student-parser
 A web scraper for extracting student data from the “Electronic University” (ЭУ) portal of Bauman Moscow State Technical University (BMSTU). It gathers student information such as names, departments, and academic details, automating the process for analysis or research.
 
 ## Requirements
@@ -34,3 +34,6 @@ To run this project, follow these steps:
     "login": "your_login",
     "password": "your_password"
   }
+
+## MainWindow
+MainWindow is a .NET WinForms application that automaticly runs .py script and then you can visualize data as a `DataGridView` Table. I made it just for fun

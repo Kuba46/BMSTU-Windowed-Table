@@ -176,3 +176,8 @@ cython_debug/
 # custom
 credentials.json
 .DS_Store
+.vs
+*.csv
+*bin
+*obj
+*.csproj.user

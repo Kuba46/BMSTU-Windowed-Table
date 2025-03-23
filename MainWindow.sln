@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35913.81
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решения", "Элементы решения", "{754FC069-D67B-A9D7-50A1-8D1CA196D8F1}"
+	ProjectSection(SolutionItems) = preProject
+		PyScraper\credentials.json = PyScraper\credentials.json
+		PyScraper\eu_students.csv = PyScraper\eu_students.csv
+		PyScraper\eu_students.log = PyScraper\eu_students.log
+		PyScraper\requirements.txt = PyScraper\requirements.txt
+	EndProjectSection
+EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PyScraper", "PyScraper\PyScraper.pyproj", "{588B0D5C-CE59-48F0-8933-1E2BC329FEF7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MainWindow", "MainWindow\MainWindow.csproj", "{CA7467D9-0FA7-4530-BAD6-948C9E649CBC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{588B0D5C-CE59-48F0-8933-1E2BC329FEF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{588B0D5C-CE59-48F0-8933-1E2BC329FEF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA7467D9-0FA7-4530-BAD6-948C9E649CBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA7467D9-0FA7-4530-BAD6-948C9E649CBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA7467D9-0FA7-4530-BAD6-948C9E649CBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA7467D9-0FA7-4530-BAD6-948C9E649CBC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {41004553-3E27-4BB9-8044-09404C206121}
+	EndGlobalSection
+EndGlobal
