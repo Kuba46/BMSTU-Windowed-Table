@@ -2,7 +2,6 @@ import logging
 import os
 
 
-# Получение пути к рабочему столу
 desktop_path = os.path.join(os.path.expanduser("~"), "Desktop")
 
 
