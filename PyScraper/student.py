@@ -1,10 +1,6 @@
 from dataclasses import dataclass, fields
 from selenium.webdriver.remote.webdriver import WebDriver
 
-from logs import OUTPUT_FILE_NAME
-
-import json
-
 
 @dataclass
 class Student:

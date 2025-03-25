@@ -5,9 +5,6 @@ VisualStudioVersion = 17.13.35913.81
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Элементы решения", "Элементы решения", "{754FC069-D67B-A9D7-50A1-8D1CA196D8F1}"
 	ProjectSection(SolutionItems) = preProject
-		PyScraper\credentials.json = PyScraper\credentials.json
-		PyScraper\eu_students.csv = PyScraper\eu_students.csv
-		PyScraper\eu_students.log = PyScraper\eu_students.log
 		PyScraper\requirements.txt = PyScraper\requirements.txt
 	EndProjectSection
 EndProject
